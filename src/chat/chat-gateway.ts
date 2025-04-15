@@ -30,7 +30,6 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
   async handleConnection(client: Socket) {
     console.log('New user connected...', client.id);
 
-    // 🔁 Oxirgi 20 ta xabarni Redis'dan olish va yangi client'ga yuborish
     const oldMessages = await redis.lrange('chat:messages', 0, 19);
     oldMessages.reverse().forEach((msg) => {
       client.emit('message', JSON.parse(msg));
