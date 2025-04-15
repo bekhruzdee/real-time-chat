@@ -1,0 +1,44 @@
+services:
+  postgres:
+    image: postgres:latest
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 2512
+      POSTGRES_DB: chat
+    networks:
+      - bekhruz
+    ports:
+      - "5432:5432"  
+
+  redis:
+    image: redis:latest
+    restart: always
+    networks:
+      - bekhruz
+    ports:
+      - "6379:6379"  
+
+  chat-real-time:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    depends_on:
+      - postgres
+      - redis
+    environment:
+      DATABASE_HOST: postgres
+      DATABASE_PORT: 5432
+      DATABASE_USERNAME: postgres
+      DATABASE_PASSWORD: 2512
+      DATABASE_NAME: chat
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+    networks:
+      - bekhruz
+
+networks:
+  bekhruz:
+    driver: bridge
